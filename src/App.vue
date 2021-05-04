@@ -1,10 +1,11 @@
 <template>
+<div id="app">
   <v-app>
    <v-content>
-     <router-view></router-view>
-     <p>helllo</p>
+      <router-view></router-view>
    </v-content>
   </v-app>
+</div>
 </template>
 
 <script>
