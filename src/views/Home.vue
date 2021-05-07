@@ -1,15 +1,14 @@
 <template>
-<v-app>
   <v-container style="margin:5% 10%; padding:5%"  >
     <v-row>
     <v-col md="6">
       <v-form v-model="valid">
         <v-container>
           <h1>LOGIN</h1>
-          <v-text-field v-model="firstname" :rules="nameRules" :counter="25" label="Username" required></v-text-field>
-          <v-text-field v-model="lastname" :rules="nameRules" :counter="25" label="Password" required></v-text-field>  
+          <v-text-field  v-model="username" :rules="nameRules" :counter="25" label="Username" required></v-text-field>
+          <v-text-field id="password" v-model="password" :rules="nameRules" :counter="25" label="Password" required></v-text-field>  
         </v-container>
-         <v-btn  style color="black" width="100%" class="mr-4 white--text"  @click="submit">
+         <v-btn  style color="black" width="100%" class="mr-4 white--text" v-on:click="formSubmit()">
             LOGIN
           </v-btn>
       </v-form>
@@ -33,17 +32,43 @@
     </v-row>
     
   </v-container>
-</v-app>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
+ data () {
+    return {
+      axios:axios,
+      username: '',
+      password: '',
+    }
+  },
   name: "Home",
 
   components: {
     
   },
 
-  
+  methods:{
+    hello() {
+      this.axios
+      .get('http://localhost:4000/hello')
+      .then(response => console.log(response.data))
+    },
+
+    formSubmit() { 
+      var form={
+        username:this.username,
+        password:this.password
+      }
+      axios.post('http://localhost:4000/login',
+        form,
+      ).then((response)=>{
+        console.log(response);
+      })
+    } 
+  }
 };
 </script>
