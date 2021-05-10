@@ -6,7 +6,7 @@
         <v-container>
           <h1>LOGIN</h1>
           <v-text-field  v-model="username" :rules="nameRules" :counter="25" label="Username" required></v-text-field>
-          <v-text-field id="password" v-model="password" :rules="nameRules" :counter="25" label="Password" required></v-text-field>  
+          <v-text-field  type="password" id="password" v-model="password" :rules="nameRules" :counter="25" label="Password" required></v-text-field> 
         </v-container>
          <v-btn  style color="black" width="100%" class="mr-4 white--text" v-on:click="formSubmit()">
             LOGIN
@@ -66,7 +66,15 @@ export default {
       axios.post('http://localhost:4000/login',
         form,
       ).then((response)=>{
-        console.log(response);
+        if(response.data.status==3) console.log(response.data.data);
+        else if(response.data.status==0) console.log(response.data.data); 
+        else{
+          console.log('holl');
+          localStorage.setItem('username', response.data.data[0].username);
+          localStorage.setItem('rol',response.data.data[0].rol);
+          console.log(response.data.data[0]);
+          location.replace('/principal');
+        }
       })
     } 
   }
