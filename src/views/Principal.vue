@@ -29,7 +29,7 @@
             <v-card-title class="text--primary ">Juega con tus amigos</v-card-title>
             <v-card-subtitle class="pb-0">La Mosca Online</v-card-subtitle>
             <v-card-actions>
-                <v-btn color="orange" text>JUGAR</v-btn>
+                <v-btn color="orange" v-on:click="playFriends()" text>JUGAR</v-btn>
             </v-card-actions>
         </v-card>
         </v-container>
@@ -51,6 +51,9 @@ data () {
   },
   name: "Principal",
   methods:{
+    playFriends() {         
+        location.replace('/Room');    
+    }, 
     logout() { 
         console.log("holla");
         var form={
