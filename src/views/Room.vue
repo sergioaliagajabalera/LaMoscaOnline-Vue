@@ -22,20 +22,20 @@
                         v-for="(item,i) in maps" :key="i"
                         reverse-transition="fade-transition"
                         transition="fade-transition">
-                        <div class="display-3">MAPAS</div>
+                        <div class="display-3">MAPS</div>
                         <v-img :src="item.src" style="width:100%;height:auto;">
                             <v-btn style color="black" class="mr-4 white--text" v-on:click="map=item.src" >SELECTED</v-btn>
                         </v-img>
                         </v-carousel-item>
                     </v-carousel>
                     <v-select
-                    v-model="select"
+                    v-model="size"
                     :items="sizes"
                     :rules="[v => !!v || 'Size is required']"
                     label="Size"
                     required
                     ></v-select>
-                    <v-btn  style color="black" width="100%" class="mr-4 white--text" v-on:click="formSubmit()">
+                    <v-btn  style color="black" width="100%" class="mr-4 white--text" v-on:click="creategame()">
                         Create Game
                     </v-btn>
                     <v-divider 
@@ -44,7 +44,7 @@
                     <v-raw>
                     <v-col md="10">
                         <v-text-field v-model="codejoinroom" :rules="nameRules" :counter="100" label="Code join" required></v-text-field>
-                        <v-btn style color="black"  class="mr-4 white--text" v-on:click="formSubmit()" >Game Join</v-btn>
+                        <v-btn style color="black"  class="mr-4 white--text" v-on:click="joingame()" >Game Join</v-btn>
                     </v-col>
                     </v-raw>
                 </v-form>
@@ -53,7 +53,7 @@
                 vertical
             ></v-divider>
             <v-col md="6">
-                <h1 >SALA</h1>
+                <h1 >ROOM {{room}}</h1>
                 <v-card class="mx-auto" max-width="300" tile>
                     <v-list flat>
                         <v-subheader>PLAYERS</v-subheader>
@@ -72,14 +72,20 @@
                         </v-list-item-group>
                     </v-list>
                 </v-card>
+                <div v-if="size==sizeROOMtemp">Sí</div>
+                <v-btn style color="black"  class="mr-4 white--text" v-on:click="startgame()" >Start Game</v-btn>
             </v-col>
         </v-row>
         </v-container>
     </v-container>
 </template>
-
+<script src="https://cdn.socket.io/4.0.2/socket.io.min.js" integrity="sha384-Bkt72xz1toXkj/oEiOgkQwWKbvNYxTNWMqdon3ejP6gwq53zSo48nW5xACmeDV0F" crossorigin="anonymous"></script>
 <script>
 import axios from "axios";
+const socket = io('http://localhost:8888');
+//socket.on calls methods
+
+
 export default {
 data () {
     return {
@@ -87,20 +93,24 @@ data () {
       axios:axios,
       username: localStorage.getItem('username'),
       rol: localStorage.getItem('rol'),
-      codejoinroom:'',
         maps:[
           {src:'https://images.pexels.com/photos/262333/pexels-photo-262333.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'},
          {src:'https://images.pexels.com/photos/1831114/pexels-photo-1831114.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'} ],
       //form
       sizes:[2,3,4,5,6],
+      size:null,
       map:'',
-      players:['sergio','sergio2','aliaga'],
+      players:[],
+      room:'',
+      codejoinroom:'',
+      //enable and disable elements doom
+      sizeROOMtemp: null,
     }
   },
   name: "Room",
+  
   methods:{
-    logout() { 
-        console.log("holla");
+    logout() {
         var form={
             username:this.username,
         }
@@ -114,13 +124,53 @@ data () {
                 localStorage.removeItem('rol');
                 location.replace('/');
             }
-        })
-    } 
-  }
+        
+        })  
+    },
+    //emits web Sockets	
+    creategame(){
+        const form = { 'player': this.username, 'map': this.map, 'size':this.size };
+        socket.emit('createGame', form);
+    },
+    joingame(){
+        const form = { 'player': this.username, 'roomcode': this.codejoinroom };
+        socket.emit('joinGame', form);
+    },
+    startgame(){
+        const form = {'playerlenght':this.players.lenght, 'roomcode':this.room};
+        socket.emit('startGame', form);
+    },
+    //methods sockets.on
+    createsuccessful(roomcode) {
+        console.log(roomcode);
+        this.players=[this.username];
+        this.room=roomcode;
+    },
+    joinsuccessful(players) { 
+        console.log(players);
+        this.players=players;
+        console.log(this.players[0].player);
+        if(this.username!=this.players[0].player)this.room=this.codejoinroom;
+    },
+    startsuccessful(value) { 
+        console.log(value);
+        location.replace('/Game');
+    }
+  },
 
-  //communications web Sockets
-  
+  mounted() {//sockets listening for call methods
+    socket.on('createsuccessful',this.createsuccessful);
+    socket.on('joinsuccessful',this.joinsuccessful);
+    socket.on('startsuccessful',this.startsuccessful);
+  },
+  wacth:{//is not computed, because in this case is not necessary optimized this code because not intervene more of a data property
+      players: function (val) {
+      this.sizeROOMtemp = val.lenght
+    },
+  }
+ 
 }
+
 </script>
 
 <style>
