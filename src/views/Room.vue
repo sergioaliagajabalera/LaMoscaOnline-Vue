@@ -82,7 +82,7 @@
 <script src="https://cdn.socket.io/4.0.2/socket.io.min.js" integrity="sha384-Bkt72xz1toXkj/oEiOgkQwWKbvNYxTNWMqdon3ejP6gwq53zSo48nW5xACmeDV0F" crossorigin="anonymous"></script>
 <script>
 import axios from "axios";
-const socket = io('http://localhost:8888');
+
 //socket.on calls methods
 
 
@@ -129,16 +129,17 @@ data () {
     },
     //emits web Sockets	
     creategame(){
+        console.log(this.$router);
         const form = { 'player': this.username, 'map': this.map, 'size':this.size };
-        socket.emit('createGame', form);
+        this.$socket.emit('createGame', form);
     },
     joingame(){
         const form = { 'player': this.username, 'roomcode': this.codejoinroom };
-        socket.emit('joinGame', form);
+        this.$socket.emit('joinGame', form);
     },
     startgame(){
-        const form = {'playerlenght':this.players.lenght, 'roomcode':this.room};
-        socket.emit('startGame', form);
+        const form = {'playerlenght':this.players.length, 'roomcode':this.room};
+        this.$socket.emit('startGame', form);
     },
     //methods sockets.on
     createsuccessful(roomcode) {
@@ -149,19 +150,19 @@ data () {
     joinsuccessful(players) { 
         console.log(players);
         this.players=players;
-        console.log(this.players[0].player);
-        if(this.username!=this.players[0].player)this.room=this.codejoinroom;
+        console.log(this.players[0]);
+        if(this.username!=this.players[0])this.room=this.codejoinroom;
     },
     startsuccessful(value) { 
         console.log(value);
+        localStorage.setItem('roomcode',this.room);
         location.replace('/Game');
     }
   },
-
-  mounted() {//sockets listening for call methods
-    socket.on('createsuccessful',this.createsuccessful);
-    socket.on('joinsuccessful',this.joinsuccessful);
-    socket.on('startsuccessful',this.startsuccessful);
+  sockets:{//sockets listening for call methods
+    createsuccessful:function (data) {this.createsuccessful(data)},
+    joinsuccessful:function (data) {this.joinsuccessful(data)},
+    startsuccessful:function (data) {this.startsuccessful(data)},
   },
   wacth:{//is not computed, because in this case is not necessary optimized this code because not intervene more of a data property
       players: function (val) {
