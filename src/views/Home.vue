@@ -61,7 +61,7 @@ export default {
     formSubmit() { 
       var form={
         username:this.username,
-        password:this.password
+        password:this.password,
       }
       axios.post('http://localhost:4000/login',
         form,
