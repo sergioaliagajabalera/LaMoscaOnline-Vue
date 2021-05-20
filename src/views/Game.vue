@@ -96,7 +96,7 @@
                   <v-expansion-panel class="yellow accent-4" > 
                     <v-expansion-panel-header>
                     <v-list-item-title v-text="winnern.player"></v-list-item-title>
-                    <v-list-item-title v-text="'Award: '+''+winnern.award+' ps'"></v-list-item-title>
+                    <v-list-item-title v-text="'Award: '+''+winnern.award+' xp'"></v-list-item-title>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                       <v-row>
