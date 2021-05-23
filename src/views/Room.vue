@@ -1,28 +1,18 @@
 <template>
-  <v-container style="margin:0% padding:0%; border:0%" fluid grid-list-lg text-lg-left >
-        <v-toolbar white prominent>
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-        <v-toolbar-title>La Mosca Online</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <v-btn icon v-on:click="logout()">
-            <v-icon>mdi-export</v-icon>
-        </v-btn>
-        </v-toolbar>
-        <v-container style="margin:0% padding:0%; border:0%; background:#FFFCF8" fluid grid-list-lg text-lg-left >
+  <v-container style="margin:0% padding:0%; border:0%;" fluid grid-list-lg text-lg-left >
+        <headerm></headerm>
+        <v-container style="margin:0% padding:0%; border:0%;" fluid grid-list-lg text-lg-left >
         <v-row style color="success" >
             
             <v-col md="6">
-                <v-form v-model="valid">
+                <v-form  style="margin:0%" v-model="valid">
                     <h1>Configuration Room</h1>
                     <v-carousel hide-delimiters style="width:100%; height:300px; background:black;">
                         <v-carousel-item style="width:100%;"
                         v-for="(item,i) in maps" :key="i"
                         reverse-transition="fade-transition"
                         transition="fade-transition">
-                        <div class="display-3">MAPS</div>
+                        <div class="display-3"  >MAPS</div>
                         <v-img :src="item.src" style="width:100%;height:auto;">
                             <v-btn style color="black" class="mr-4 white--text" v-on:click="map=item.src" >SELECTED</v-btn>
                         </v-img>
@@ -52,18 +42,18 @@
             <v-divider
                 vertical
             ></v-divider>
-            <v-col md="6">
+            <v-col md="6" class="text-md-center" >
                 <h1 >ROOM {{room}}</h1>
                 <v-card class="mx-auto" max-width="300" tile>
                     <v-list flat>
-                        <v-subheader>PLAYERS</v-subheader>
+                        <v-subheader dark class="indigo" >PLAYERS</v-subheader>
                         <v-list-item-group v-model="selectedItem" color="primary">
                             <v-list-item
                             v-for="(item, i) in players"
                             :key="i"
                             >
                             <v-list-item-icon>
-                                <v-icon v-text="item.icon">mdi-account-box</v-icon>
+                                <skills :username='item'></skills>
                             </v-list-item-icon>
                             <v-list-item-content>
                                 <v-list-item-title v-text="item"></v-list-item-title>
@@ -73,7 +63,7 @@
                     </v-list>
                 </v-card>
                 <div v-if="size==sizeROOMtemp">Sí</div>
-                <v-btn style color="black"  class="mr-4 white--text" v-on:click="startgame()" >Start Game</v-btn>
+                <v-btn style color="indigo"  class="mr-4 white--text" v-on:click="startgame()" >Start Game</v-btn>
             </v-col>
         </v-row>
         </v-container>
@@ -82,9 +72,8 @@
 <script src="https://cdn.socket.io/4.0.2/socket.io.min.js" integrity="sha384-Bkt72xz1toXkj/oEiOgkQwWKbvNYxTNWMqdon3ejP6gwq53zSo48nW5xACmeDV0F" crossorigin="anonymous"></script>
 <script>
 import axios from "axios";
-
-//socket.on calls methods
-
+import Skills from './Skills.vue';
+import Headerm from './Headermosca';
 
 export default {
 data () {
@@ -108,25 +97,11 @@ data () {
     }
   },
   name: "Room",
-  
+  components: {
+    Skills,
+    Headerm
+  },
   methods:{
-    logout() {
-        var form={
-            username:this.username,
-        }
-        axios.post('http://localhost:4000/logout',
-            form,
-        ).then((response)=>{
-            if(response.data.status==3) console.log(response.data.data);
-            else if(response.data.status==0) console.log(response.data.data); 
-            else{
-                localStorage.removeItem('username');
-                localStorage.removeItem('rol');
-                location.replace('/');
-            }
-        
-        })  
-    },
     //emits web Sockets	
     creategame(){
         console.log(this.$router);

@@ -1,8 +1,9 @@
-<template>
-  <v-container style="margin:5% 10%; padding:5%"  >
-    <v-row>
+<template  >
+  <v-container style="margin:0%; padding:0%;" class="text-md-center" fluid grid-list-lg>
+    <img style="width:35%; margin-top:2%" src="logo.png"/>
+    <v-row style="margin:0%"  >
     <v-col md="6">
-      <v-form v-model="valid">
+      <v-form v-model="valid" style="margin-top:10%; margin-bottom:2%" >
         <v-container>
           <h1>LOGIN</h1>
           <v-text-field  v-model="username" :rules="nameRules" :counter="25" label="Username" required></v-text-field>
@@ -12,22 +13,19 @@
             LOGIN
           </v-btn>
       </v-form>
-      <v-btn to="/about" >Crear Cuenta</v-btn>
+      <v-btn to="/register" >Create account</v-btn>
     </v-col>
-    <v-divider
-  vertical
-></v-divider>
-    <v-col md="6">
-      <v-form v-model="valid">
-        <v-container>
-          <h1 >GOOGLE</h1>
-          <v-text-field v-model="firstname" :rules="nameRules" :counter="25" label="Username" required></v-text-field>
-          <v-text-field v-model="lastname" :rules="nameRules" :counter="25" label="Password" required></v-text-field>  
+    <v-divider vertical></v-divider>
+    <v-col md="6" class="text-md-center" >
+        <v-container style="margin-top:10%;" >
+          <h1>FOLLOW US</h1>
+          <a href="https://twitter.com/">
+            <img  style="width:45%" src="https://www.webxpro.es/wp-content/uploads/2014/11/twitter.jpg"/>
+          </a> <br>
+          <a href="https://www.instagram.com/">
+            <img  style="width:45%; border-radius:200" max-width="250" src="https://hardwareviews.com/wp-content/uploads/2019/02/Instagram-Banner-Logo-de-Instagram-vector-logo-instagram-sin-fondo-1000x480.gif"/>
+          </a>
         </v-container>
-         <v-btn  style color="black" width="100%" class="mr-4 white--text"  @click="submit">
-            LOGIN
-          </v-btn>
-      </v-form>
     </v-col>
     </v-row>
     

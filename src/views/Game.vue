@@ -1,87 +1,80 @@
-<template>
-  <v-container style="margin:0% padding:0%; border:0%" fluid grid-list-lg text-lg-left >
-        <v-toolbar white prominent>
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-        <v-toolbar-title>La Mosca Online</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <v-btn icon v-on:click="logout()">
-            <v-icon>mdi-export</v-icon>
+<template >
+  <v-container style="margin:0% padding:0%; border:0%;" class="text-md-center" fluid grid-list-lg  >
+        <img style="width:20%;" src="logo.png">
+        <v-btn icon style="margin:0%" color="indigo" v-on:click="dialogexit=true">
+          <v-icon>mdi-exit-run</v-icon>
         </v-btn>
-        </v-toolbar>
-        <v-container style="margin:5% 0% ; background:#FFFCF8" fluid grid-list-lg text-lg-left >
-        <v-container style="width:100%; margin:0%" >  
-              <v-row>
-                <v-list-item-group color="primary" style="margin:0% 0% 5% 0%" v-for="(player, index) in players"  v-bind:key="player" >
-                  <v-row v-if="index%2==0" >
-                    <v-icon v-text="player.icon" >mdi-account-box</v-icon>
-                    <v-list-item-title v-text="player.player"></v-list-item-title>
-                    <v-container style="background:green;">
+        <v-container style="margin-top:2%;" class="text-md-center" fluid grid-list-lg text-lg-left>
+        <v-container style="width:100%; margin:0% 0% 2.5% 0%;">  
+              <v-row align="center" justify="center">
+                <v-list-item-group color="primary" style="margin:0% 1.5% 0% 0%;" v-for="(player, index) in players"  v-bind:key="player" >
+                  <v-row v-if="index%2==0">
+                    <skills :username='player.player'/>
+                    <v-list-item-title v-if="game.turn==index" style="margin:0%; background-color:#ffd700;" v-text="player.player"></v-list-item-title>
+                    <v-list-item-title v-else style="margin:0%;" v-text="player.player"></v-list-item-title>
+                    <v-container style="background:green; border:2px solid #3F51B5">
                         <div style="float:left;" v-for='(card,index2) in players[index].cards'  v-bind:key='card' class=''>
-                          <img :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:35px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
+                          <img :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
                         </div>
-                        <v-btn v-if="!viewtwocard && player.player==username" v-on:click="viewCard(index,0);viewCard(index,1);" color="success">
+                        <v-btn style="margin:2%" v-if="!viewtwocard && player.player==username" v-on:click="viewCard(index,0,2);viewCard(index,1,2);" color="success">
                           VIEW CARDS(Once)
                         </v-btn>
                   </v-container>
                   </v-row>
-                </v-list-item-group>
-                
+                </v-list-item-group>              
               </v-row>
             </v-container>
-            <v-container style="width:100%;background-size: cover; margin:0%" :style="{ backgroundImage: `url(${map})`}" no-repeat center fixed !important >  
-               <v-row align="center" justify="center" style="width:40%;">
-                  <v-col class="">
+            <v-row align="center" justify="center" style="width:100%;" >
+            <v-container style="width:45%; height:auto; background-size: cover; margin:0%; border:2px solid #3F51B5"  :style="{ backgroundImage: `url(${map})`}" no-repeat center fixed !important class="text-md-center" fluid grid-list-lg >  
+               <v-row align="center" justify="center" style="width:100%; margin-top:10%; margin-bottom:10%" >
+                  <v-col class="" style="margin:0%">
                     <div 
-                      class="drop-zone"
+                      class="drop-zone" 
                       v-on:click="giveCard()"
                     >
-                     <img style="width:35px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
+                     <img style="width:50px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
                     </div>
                   </v-col>
-                  <v-col class="">
+                  <v-col style="margin:0%">
                     <div 
                     class='drop-zone'
                       @drop='onDrop($event)' 
                       @dragover.prevent
                       @dragenter.prevent 
                     >
-                     <img style="width:35px; margin:0%" :src="server+game.cardsecondlast.image">
-                     <img style="width:35px; margin:0%" :src="server+game.cardlast.image">
+                     <img style="width:50px; margin:0%;" :src="server+game.cardsecondlast.image">
+                     <img style="width:50px; margin:0%;"  :src="server+game.cardlast.image">
                     </div>
                   </v-col>
-                  <v-col class="">
+                  <v-col class="" style="margin:0%" >
                    <v-btn v-on:click="mosca()" class="mx-1" fab dark large color="purple">
                       <v-icon dark> mdi-bee</v-icon>
                     </v-btn>
                   </v-col>
                </v-row>
             </v-container>
-            <v-container style="width:100%;margin:0%" >  
-              <v-row>
-                <v-list-item-group color="primary" style="margin:5% 0% 0% 0%" v-for="(player, index) in players"  v-bind:key="player" >
+            </v-row>
+            <v-container style="width:100%;margin:2.5% 2% 0% 0%" >  
+              <v-row align="center" justify="center" >
+                <v-list-item-group color="primary" style="margin-right:2%" v-for="(player, index) in players"  v-bind:key="player" >
                   <v-row v-if="index%2!=0" >
-                    <v-icon v-text="player.icon" >mdi-account-box</v-icon>
-                    <v-list-item-title v-text="player.player"></v-list-item-title>
-                    <v-container style="background:green;">
+                    <v-container style="background:green; border:2px solid #3F51B5">
                         <div style="float:left;" v-for='(card,index2) in players[index].cards'  v-bind:key='card' class=''>
-                          <img :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:35px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
+                          <img :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
                         </div>
-                        <v-btn v-if="!viewtwocard && player.player==username" v-on:click="viewCard(index,0);viewCard(index,1);" color="success">
+                         <v-btn v-if="!viewtwocard && player.player==username" style="margin:2%" v-on:click="viewCard(index,0,2);viewCard(index,1,2);" color="success">
                           VIEW CARDS(Once)
                         </v-btn>
                   </v-container>
+                    <v-list-item-title v-if="game.turn==index" style="margin:0%; background-color:#ffd700; " v-text="player.player"></v-list-item-title>
+                    <v-list-item-title v-else style="margin:0%;" v-text="player.player"></v-list-item-title>
+                    <skills :username='player.player'/>
                   </v-row>
                 </v-list-item-group>
                 
               </v-row>
             </v-container>
         </v-container>
-        <p id="hola">hola</p>
-     
-
 
 
       <!-- POP UPS--> 
@@ -116,13 +109,13 @@
               </v-row>
             </v-list-item-group>
             <v-card-actions class="justify-end" max-width="800">
-              <v-btn color="primary" v-on:click="toprincipal()" text >Return to menu</v-btn>
+              <v-btn color="indigo" v-on:click="toprincipal()" text >Return to menu</v-btn>
             </v-card-actions>
           </v-card>
       </v-dialog>
       <!--Dialog throw card collected or another card-->
       <v-dialog transition="dialog-top-transition" persistent max-width="800" v-model="dialogcollectcard">
-          <v-card max-width="800">
+          <v-card max-width="800" class="indigo lighten-5">
             <v-toolbar color="#FFFCF8" max-width="800" white>throw card collected  or another card</v-toolbar>
             <h1>choose card you want change</h1>
             <v-list-item-group color="primary" style="margin:5% 0% 0% 0%" v-for="(player, index) in players"  v-bind:key="player" >
@@ -144,7 +137,7 @@
 
       <!--Dialog view your card movement speciall-->
       <v-dialog transition="dialog-top-transition" persistent max-width="800" v-model="dialogviewyourcardmovementspecial">
-          <v-card max-width="800">
+          <v-card max-width="800" class="indigo lighten-5">
             <v-toolbar class="yellow accent-4" max-width="800" white>Movement special</v-toolbar>
             <h1>View one card</h1>
             <v-list-item-group color="primary" style="margin:5% 0% 0% 0%" v-for="(player, index) in players"  v-bind:key="player" >
@@ -163,15 +156,14 @@
 
       <!--Dialog view card another player movement speciall-->
       <v-dialog transition="dialog-top-transition" persistent max-width="800" v-model="dialogviewcardanotherplayermovementspecial">
-          <v-card max-width="800">
+          <v-card max-width="800" class="indigo lighten-5" >
             <v-toolbar class="yellow accent-4" max-width="800" white>Movement special</v-toolbar>
             <h1>View card another player</h1>
             <v-list-item-group color="primary" style="margin:5% 0% 0% 0%" v-for="(player, index) in players"  v-bind:key="player" >
-              <v-row v-if="username!=player.player" >
+              <v-row v-if="username!=player.player && index!=game.playernmosca" >
                 <v-expansion-panels>
                   <v-expansion-panel>
                     <v-expansion-panel-header>
-                    <v-icon v-text="player.icon" >mdi-account-box</v-icon>
                     <v-list-item-title v-text="player.player"></v-list-item-title>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -192,15 +184,14 @@
       
       <!--Dialog exchange without see movement special-->
       <v-dialog transition="dialog-top-transition" persistent max-width="800" v-model="dialogchangecardwithoutseemovementspecial">
-          <v-card max-width="800">
+          <v-card max-width="800" class="indigo lighten-5">
             <v-toolbar class="yellow accent-4" max-width="800" white>Movement special</v-toolbar>
             <h1>Exchange without see</h1>
             <v-list-item-group color="primary" style="margin:5% 0% 0% 0%" v-for="(player, index) in players"  v-bind:key="player" >
-              <v-row v-if="username!=player.player" >
+              <v-row v-if="username!=player.player && index!=game.playernmosca" >
                 <v-expansion-panels>
                   <v-expansion-panel>
                     <v-expansion-panel-header>
-                    <v-icon v-text="player.icon" >mdi-account-box</v-icon>
                     <v-list-item-title v-text="player.player"></v-list-item-title>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -233,15 +224,14 @@
       </v-dialog>
       <!--Dialog exchange see movement special-->
       <v-dialog transition="dialog-top-transition" persistent max-width="800" v-model="dialogchangecardseemovementspecial">
-          <v-card max-width="800">
+          <v-card max-width="800" class="indigo lighten-5" >
             <v-toolbar class="yellow accent-4" max-width="800" white>Movement special</v-toolbar>
             <h1>Exchange see</h1>
             <v-list-item-group color="primary" style="margin:5% 0% 0% 0%" v-for="(player, index) in players"  v-bind:key="player" >
-              <v-row v-if="username!=player.player" >
+              <v-row v-if="username!=player.player && index!=game.playernmosca">
                 <v-expansion-panels>
                   <v-expansion-panel>
                     <v-expansion-panel-header>
-                    <v-icon v-text="player.icon" >mdi-account-box</v-icon>
                     <v-list-item-title v-text="player.player"></v-list-item-title>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -279,7 +269,7 @@
       </v-dialog>
       <!--Dialog give card to another player-->
       <v-dialog transition="dialog-top-transition" persistent max-width="800" v-model="dialoggiveOneCardtoanother">
-          <v-card max-width="800">
+          <v-card max-width="800" class="indigo lighten-5" >
             <v-toolbar color="#FFFCF8" max-width="800" white>throw card collected  or another card</v-toolbar>
             <h1>choose card you want change</h1>
             <v-list-item-group color="primary" style="margin:5% 0% 0% 0%" v-for="(player, index) in players"  v-bind:key="player" >
@@ -307,18 +297,38 @@
             </v-card-actions>
           </v-card>
       </v-dialog>
-
- <!--Dialog mosca!!!-->
+      <!--Dialog Exit!!!-->
+      <v-dialog scrollable max-width="290"  v-model="dialogexit">
+        <v-card dark color="indigo" max-width="290">
+          <v-card-title class="headline">
+            Are you sure to go out?
+          </v-card-title>
+          <v-card-text>
+            If you to go out, you can't continue play this room
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="dialogexit = false">
+              Cancel :)
+            </v-btn>
+            <v-btn text @click="dialogexit = false">
+              Yes :(
+            </v-btn>
+          </v-card-actions>
+        </v-card>    
+      </v-dialog>
+      <!--Dialog mosca!!!-->
       <v-dialog scrollable max-width="800" v-model="dialogmosca">
           <img  style="width:100%; margin:0%" :src="server + '/images/mosca/mosca.svg'">         
       </v-dialog>
+  
 
     </v-container>
 </template>
 
 <script>
 //import axios from "axios";
-
+import Skills from './Skills.vue';
 
 export default {
 data () {
@@ -332,6 +342,7 @@ data () {
       dialogerror:false,
       dialogmosca:false,
       dialogwinner:false,
+      dialogexit:false,
       //general
       username: localStorage.getItem('username'),
       rol: localStorage.getItem('rol'),
@@ -354,7 +365,9 @@ data () {
     }
   },
   name: "Game",
-
+  components: {
+    Skills
+  },
   methods:{
     getstatussuccessful(result){
         console.log(result);
@@ -408,8 +421,10 @@ data () {
       this.$socket.emit('throwCard',senditem);
       this.dialogcollectcard=false;
     },
-    viewCard(index,index2) {//
-      let senditem={playern:index, cardn:index2}
+    viewCard(index,index2,action) {//
+    let senditem={};
+      if(action!=2) senditem={playern:index, cardn:index2};
+      else senditem={playern:index, cardn:index2,action:2};
       this.$socket.emit('viewCard',senditem);
     },
     changeCardwithoutsee(action) {//
@@ -477,7 +492,7 @@ data () {
           setTimeout(function(){
             console.log(server);
             document.getElementById(idCard).setAttribute('src', server+"/images/cards/generic/trasera.png");
-          }, 15000);
+          }, 7000);
         }
     },
     givecardsuccessful(result){
@@ -544,7 +559,9 @@ data () {
 <style>
 .drop-zone {
     background-color: #eee;
-    margin-bottom: 10px;
-    padding: 10px;
+    padding: 2%;
+    width: 60%;
+    margin: 0%;
+    border:2px solid #3F51B5;
   }
 </style>
