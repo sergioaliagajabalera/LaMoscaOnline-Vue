@@ -10,11 +10,16 @@
                 <v-list-item-group color="primary" style="margin:0% 1.5% 0% 0%;" v-for="(player, index) in players"  v-bind:key="player" >
                   <v-row v-if="index%2==0">
                     <skills :username='player.player'/>
-                    <v-list-item-title v-if="game.turn==index" style="margin:0%; background-color:#ffd700;" v-text="player.player"></v-list-item-title>
-                    <v-list-item-title v-else style="margin:0%;" v-text="player.player"></v-list-item-title>
+                    <v-row style="margin:0%">
+                      <p v-if="game.turn==index" style="margin:0%; background-color:#ffd700; " v-text="player.player"></p> 
+                      <p v-else style="margin:0%;" v-text="player.player"></p>
+                      <v-icon v-if="game.playernmosca==index"> mdi-bee</v-icon>
+                    </v-row>
                     <v-container style="background:green; border:2px solid #3F51B5">
                         <div style="float:left;" v-for='(card,index2) in players[index].cards'  v-bind:key='card' class=''>
-                          <img :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
+                          <img  v-if="(game.draw1.playern==index && game.draw1.cardn==index2) || (game.draw3.playern==index && game.draw3.cardn==index2) " :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%; box-shadow:10px 10px 5px #3F51B5; filter:brightness(120%); transition:all .3s ease-in-out; " :src="server + '/images/cards/generic/trasera.png'">
+                          <img v-else-if="(game.draw2.playern==index && game.draw2.cardn==index2)" :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%; box-shadow:10px 10px 5px #ff5252; filter:brightness(120%);  transition:all .3s ease-in-out; " :src="server + '/images/cards/generic/trasera.png'">
+                          <img v-else :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
                         </div>
                         <v-btn style="margin:2%" v-if="!viewtwocard && player.player==username" v-on:click="viewCard(index,0,2);viewCard(index,1,2);" color="success">
                           VIEW CARDS(Once)
@@ -60,18 +65,22 @@
                   <v-row v-if="index%2!=0" >
                     <v-container style="background:green; border:2px solid #3F51B5">
                         <div style="float:left;" v-for='(card,index2) in players[index].cards'  v-bind:key='card' class=''>
-                          <img :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
+                          <img  v-if="(game.draw1.playern==index && game.draw1.cardn==index2) || (game.draw3.playern==index && game.draw3.cardn==index2) " :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%; box-shadow:10px 10px 5px #3F51B5; filter:brightness(120%); transition:all .3s ease-in-out; " :src="server + '/images/cards/generic/trasera.png'">
+                          <img  v-else-if="(game.draw2.playern==index && game.draw2.cardn==index2)" :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%; box-shadow:10px 10px 5px #ff5252; filter:brightness(120%);transition:all .3s ease-in-out; " :src="server + '/images/cards/generic/trasera.png'">
+                          <img v-else :id="index+'|'+index2" draggable @dragend='endDrag($event,index,index2)' @dragstart='startDrag($event,index,index2)' style="width:50px; margin:0%" :src="server + '/images/cards/generic/trasera.png'">
                         </div>
-                         <v-btn v-if="!viewtwocard && player.player==username" style="margin:2%" v-on:click="viewCard(index,0,2);viewCard(index,1,2);" color="success">
+                        <v-btn v-if="!viewtwocard && player.player==username" style="margin:2%" v-on:click="viewCard(index,0,2);viewCard(index,1,2);" color="success">
                           VIEW CARDS(Once)
                         </v-btn>
-                  </v-container>
-                    <v-list-item-title v-if="game.turn==index" style="margin:0%; background-color:#ffd700; " v-text="player.player"></v-list-item-title>
-                    <v-list-item-title v-else style="margin:0%;" v-text="player.player"></v-list-item-title>
+                    </v-container>
+                    <v-row style="margin:0%">
+                      <p v-if="game.turn==index" style="margin:0%; background-color:#ffd700; " v-text="player.player"></p> 
+                      <p v-else style="margin:0%;" v-text="player.player"></p>
+                      <v-icon v-if="game.playernmosca==index"> mdi-bee</v-icon>
+                    </v-row>
                     <skills :username='player.player'/>
                   </v-row>
-                </v-list-item-group>
-                
+                </v-list-item-group>  
               </v-row>
             </v-container>
         </v-container>
@@ -135,7 +144,7 @@
           </v-card>
       </v-dialog>
 
-      <!--Dialog view your card movement speciall-->
+      <!--Dialog view your card movement special-->
       <v-dialog transition="dialog-top-transition" persistent max-width="800" v-model="dialogviewyourcardmovementspecial">
           <v-card max-width="800" class="indigo lighten-5">
             <v-toolbar class="yellow accent-4" max-width="800" white>Movement special</v-toolbar>
@@ -178,6 +187,7 @@
               </v-row>
             </v-list-item-group>
             <v-card-actions class="justify-end" max-width="800">
+              <v-btn  color="error" text  v-on:click="changeturn()">CANCEL</v-btn>
             </v-card-actions>
           </v-card>
       </v-dialog>
@@ -311,7 +321,7 @@
             <v-btn text @click="dialogexit = false">
               Cancel :)
             </v-btn>
-            <v-btn text @click="dialogexit = false">
+            <v-btn text @click="principal()">
               Yes :(
             </v-btn>
           </v-card-actions>
@@ -369,6 +379,9 @@ data () {
     Skills
   },
   methods:{
+    principal(){
+      location.replace('/principal');
+    },
     getstatussuccessful(result){
         console.log(result);
         this.map=result.game.map;
@@ -454,7 +467,9 @@ data () {
       let senditem={playerreceive:this.nameplayergiveyourCard,playern:index,cardn:index2}
       this.$socket.emit('giveCardtoanother',senditem);
     },
-
+    changeturn() {//
+      this.$socket.emit('changeturn');
+    },
 
     //-----------actions users functions call for sockets on ---------------------------
     moscasuccessful(){
@@ -552,6 +567,7 @@ data () {
     let form = {player:this.username,roomcode:this.room};
     this.$socket.emit('getstatusGame', form);
     this.$socket.emit('getcheckturnround');
+    localStorage.removeItem('roomcode');
   }
 }
 </script>

@@ -7,10 +7,8 @@
         </v-btn>
         <v-spacer></v-spacer>
         
-        <v-btn icon>
-          <router-link to="/principal" style="color:white">
+        <v-btn icon v-on:click="principal()">
             <v-icon>mdi-home</v-icon>
-          </router-link>
         </v-btn>
         <v-btn icon v-on:click="logout()">
             <v-icon>mdi-export</v-icon>
@@ -54,6 +52,9 @@ data () {
           location.replace('/');
         }
       })
+    },
+    principal(){
+      location.replace('/principal');
     } 
   }
 }

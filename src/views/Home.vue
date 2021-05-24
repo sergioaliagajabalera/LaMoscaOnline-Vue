@@ -39,7 +39,7 @@ export default {
  data () {
     return {
       axios:axios,
-      username: '',
+      username:'',
       password: '',
     }
   },
@@ -61,20 +61,26 @@ export default {
         username:this.username,
         password:this.password,
       }
-      axios.post('http://localhost:4000/login',
-        form,
-      ).then((response)=>{
-        if(response.data.status==3) console.log(response.data.data);
-        else if(response.data.status==0) console.log(response.data.data); 
-        else{
-          console.log('holl');
-          localStorage.setItem('username', response.data.data[0].username);
-          localStorage.setItem('rol',response.data.data[0].rol);
-          console.log(response.data.data[0]);
-          location.replace('/principal');
-        }
-      })
-    } 
-  }
+      if(localStorage.getItem('username')==this.username || localStorage.getItem('username')==null){
+        axios.post('http://localhost:4000/login',
+          form,
+        ).then((response)=>{
+          if(response.data.status==3) console.log(response.data.data);
+          else if(response.data.status==0) console.log(response.data.data); 
+          else{
+            console.log('holl');
+            localStorage.setItem('username', response.data.data[0].username);
+            localStorage.setItem('rol',response.data.data[0].rol);
+            console.log(response.data.data[0]);
+            location.replace('/principal');
+          }
+        })
+      }
+    },
+  },
+  created(){
+      console.log("hola")
+      if(localStorage.getItem('username')!=null) this.username=localStorage.getItem('username');
+    }
 };
 </script>

@@ -62,8 +62,8 @@
                         </v-list-item-group>
                     </v-list>
                 </v-card>
-                <div v-if="size==sizeROOMtemp">Sí</div>
-                <v-btn style color="indigo"  class="mr-4 white--text" v-on:click="startgame()" >Start Game</v-btn>
+                <v-btn style="margin-bottom:0%" color="indigo"  class="mr-4 white--text" v-on:click="startgame()" >Start Game</v-btn><br>
+                <v-btn style color="error"  class="mr-4 white--text" v-on:click="disconnectgame()" >Disconnect</v-btn>
             </v-col>
         </v-row>
         </v-container>
@@ -116,6 +116,9 @@ data () {
         const form = {'playerlenght':this.players.length, 'roomcode':this.room};
         this.$socket.emit('startGame', form);
     },
+    disconnectgame(){
+        location.replace('/principal');
+    },
     //methods sockets.on
     createsuccessful(roomcode) {
         console.log(roomcode);
@@ -142,9 +145,8 @@ data () {
   wacth:{//is not computed, because in this case is not necessary optimized this code because not intervene more of a data property
       players: function (val) {
       this.sizeROOMtemp = val.lenght
-    },
-  }
- 
+    }
+  },
 }
 
 </script>
