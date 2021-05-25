@@ -20,6 +20,18 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/Register.vue"),
   },
   {
+    path: "/edituser",
+    name: "edituser",
+    component: () =>
+      import(/* webpackChunkName: "Room" */ "../views/EditUser.vue"),
+  },
+  {
+    path: "/managementuser",
+    name: "managementuser",
+    component: () =>
+      import(/* webpackChunkName: "Room" */ "../views/ManagementUser.vue"),
+  },
+  {
     path: "/principal",
     name: "Principal",
     component: Principal,

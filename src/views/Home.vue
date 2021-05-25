@@ -13,6 +13,7 @@
             LOGIN
           </v-btn>
       </v-form>
+      <p v-if="errorform!=false" class="red--text">{{errorform}}</p>
       <v-btn to="/register" >Create account</v-btn>
     </v-col>
     <v-divider vertical></v-divider>
@@ -41,6 +42,8 @@ export default {
       axios:axios,
       username:'',
       password: '',
+      //form
+      errorform:false,
     }
   },
   name: "Home",
@@ -65,17 +68,16 @@ export default {
         axios.post('http://localhost:4000/login',
           form,
         ).then((response)=>{
-          if(response.data.status==3) console.log(response.data.data);
+          if(response.data.status==3) this.errorform=response.data.data;
           else if(response.data.status==0) console.log(response.data.data); 
           else{
-            console.log('holl');
             localStorage.setItem('username', response.data.data[0].username);
-            localStorage.setItem('rol',response.data.data[0].rol);
+            localStorage.setItem('role',response.data.data[0].rol);
             console.log(response.data.data[0]);
             location.replace('/principal');
           }
         })
-      }
+      }else this.errorform='Session open with another user, try go into with the user of the last time';
     },
   },
   created(){

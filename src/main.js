@@ -14,8 +14,9 @@ Vue.config.productionTip = false;
 /* Establish Connection */
 //const socketConnection = SocketIO('http://localhost:8888');
 
-//Vue.use();
+export const bus = new Vue();
 
+//Vue.use();
 new Vue({
   router,
   store,

@@ -59,7 +59,7 @@
                </v-row>
             </v-container>
             </v-row>
-            <v-container style="width:100%;margin:2.5% 2% 0% 0%" >  
+            <v-container style="width:100%;margin:2.5% 0% 0% 0%" >  
               <v-row align="center" justify="center" >
                 <v-list-item-group color="primary" style="margin-right:2%" v-for="(player, index) in players"  v-bind:key="player" >
                   <v-row v-if="index%2!=0" >
@@ -355,7 +355,7 @@ data () {
       dialogexit:false,
       //general
       username: localStorage.getItem('username'),
-      rol: localStorage.getItem('rol'),
+      role: localStorage.getItem('role'),
       room:localStorage.getItem('roomcode'),
       server:"http://localhost:4000",
       //game properties
@@ -562,6 +562,9 @@ data () {
     giveCardtoanothersuccessful:function () {this.giveCardtoanothersuccessful()},
     showcardchangesuccessful:function (data) {this.showcardchangesuccessful(data)},
     errormessagesocket:function (data) {this.errormessagesocket(data)},
+  },
+  beforeCreate() {
+    if(!localStorage.getItem('username')) location.replace('/') ;
   },
   mounted(){//one emit for get status game
     let form = {player:this.username,roomcode:this.room};

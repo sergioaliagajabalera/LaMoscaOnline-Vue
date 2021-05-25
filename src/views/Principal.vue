@@ -33,7 +33,7 @@ data () {
     return {
       axios:axios,
       username: localStorage.getItem('username'),
-      rol: localStorage.getItem('rol'),
+      role: localStorage.getItem('role'),
       items:[
           {src:'https://images.pexels.com/photos/262333/pexels-photo-262333.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'},
          {src:'https://images.pexels.com/photos/1831114/pexels-photo-1831114.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'} ]
@@ -48,6 +48,9 @@ data () {
     playFriends() {         
         location.replace('/Room');    
     }, 
+  },
+  beforeCreate() {
+    if(!localStorage.getItem('username')) location.replace('/') ;
   }
 }
 </script>
